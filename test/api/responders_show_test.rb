@@ -1,15 +1,12 @@
 require 'test_helper'
-
 class RespondersShowTest < ActionDispatch::IntegrationTest
   def setup
     super
-
     post '/responders/', responder: { type: 'Fire', name: 'F-100', capacity: 1 }
   end
 
   test 'GET /responders/:name simple get by name' do
     get '/responders/F-100'
-
     assert_equal(
       {
         'responder' => {
