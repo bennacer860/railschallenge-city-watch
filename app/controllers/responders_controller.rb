@@ -1,4 +1,9 @@
 class RespondersController < ApplicationController
+
+  def new
+    render json: { message: 'page not found' }, status: :not_found
+  end
+
   def create
     @responder = Responder.new(responder_create_params)
     if @responder.save
@@ -15,6 +20,14 @@ class RespondersController < ApplicationController
     else
       render json: { message: 'non-existent-responder-name' }, status: :not_found
     end
+  end
+
+  def edit
+    render json: { message: 'page not found' }, status: :not_found
+  end
+
+  def destroy
+    render json: { message: 'page not found' }, status: :not_found
   end
 
   private
