@@ -1,4 +1,8 @@
 class RespondersController < ApplicationController
+  def index
+    responders = Responder.all.map { |responder| format_show_responder(responder) }
+    render json: { responders: responders }, status: :ok
+  end
 
   def new
     render json: { message: 'page not found' }, status: :not_found

@@ -13,7 +13,6 @@ class RespondersIndexTest < ActionDispatch::IntegrationTest
     Responder.destroy_all
 
     get '/responders/'
-
     assert_equal 200, response.status
     assert_equal [], JSON.parse(body)['responders']
   end
