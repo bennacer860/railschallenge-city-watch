@@ -8,9 +8,27 @@ class EmergenciesController < ApplicationController
     end
   end
 
+  def index
+    @emergencies = Emergency.all
+    render json: { emergencies: @emergencies }, status: :ok
+  end
+
+  def update
+    @emergency = Emergency.find_by_code!(params[:id])
+    if @emergency.update(emergency_update_params)
+      render json: { emergency: @emergency }, status: :ok
+    else
+      render json: { emergency: @emergency.errors }, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def emergency_create_params
+    params.require(:emergency).permit(:code, :fire_severity, :police_severity, :medical_severity)
+  end
+
+  def emergency_update_params
     params.require(:emergency).permit(:code, :fire_severity, :police_severity, :medical_severity)
   end
 
