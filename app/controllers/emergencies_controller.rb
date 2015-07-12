@@ -31,6 +31,22 @@ class EmergenciesController < ApplicationController
     end
   end
 
+  def destroy
+    render json: { message: 'page not found' }, status: :not_found
+  end
+
+  def edit
+    render json: { message: 'page not found' }, status: :not_found
+  end
+
+  def new
+    render json: { message: 'page not found' }, status: :not_found
+  end
+
+ def new
+    render json: { message: 'page not found' }, status: :not_found
+  end
+
   private
 
   def emergency_create_params
@@ -40,5 +56,4 @@ class EmergenciesController < ApplicationController
   def emergency_update_params
     params.require(:emergency).permit(:code, :fire_severity, :police_severity, :medical_severity)
   end
-
 end
