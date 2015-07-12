@@ -22,6 +22,15 @@ class EmergenciesController < ApplicationController
     end
   end
 
+  def show
+    @emergency = Emergency.find_by_code(params[:id])
+    if @emergency
+      render json: { emergency: @emergency }, status: :ok
+    else
+      render json: { message: 'non-existent-responder-name' }, status: :not_found
+    end
+  end
+
   private
 
   def emergency_create_params
