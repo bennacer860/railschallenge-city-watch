@@ -18,6 +18,7 @@ ActiveRecord::Schema.define(version: 20150711224320) do
     t.integer  "fire_severity"
     t.integer  "police_severity"
     t.integer  "medical_severity"
+    t.integer  "resolved_at"
     t.datetime "created_at",       null: false
     t.datetime "updated_at",       null: false
   end
