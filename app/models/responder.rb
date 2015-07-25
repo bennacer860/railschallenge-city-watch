@@ -1,5 +1,6 @@
 class Responder < ActiveRecord::Base
   self.inheritance_column = :_type
+  belongs_to :emergency, foreign_key: "emergency_code"
 
   validates :type, presence: true
   validates :name, presence: true, uniqueness: true
