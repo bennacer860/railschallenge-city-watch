@@ -1,7 +1,12 @@
 class RespondersController < ApplicationController
   def index
-    @responders = Responder.all.map { |responder| format_show_responder(responder) }
-    render json: { responders: responders }, status: :ok
+    if params[:show]
+      @responders = Responder.show_capacity
+      render json: { capacity: @responders }, status: :ok
+    else
+      @responders = Responder.all.map { |responder| format_show_responder(responder) }
+      render json: { responders: @responders }, status: :ok
+    end
   end
 
   def new

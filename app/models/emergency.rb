@@ -3,12 +3,21 @@ class Emergency < ActiveRecord::Base
   validates :police_severity, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :medical_severity, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :fire_severity, presence: true, numericality: { greater_than_or_equal_to: 0 }
+  RESPONDER_TYPE = { :fire_severity => "Fire", :medical_severity => "Medical", :police_severity => "Police" }
+  before_create :dispatch
 
   def resolved?
-    !resolved_at.nil?  
+    !resolved_at.nil?
   end
 
   def full_message
-    
-  end  
+
+  end
+
+  def dispatch
+    RESPONDER_TYPE.keys.each{|key|
+      #find a responder on duty
+    }
+  end
+
 end

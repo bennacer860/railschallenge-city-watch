@@ -1,7 +1,7 @@
 class CreateResponders < ActiveRecord::Migration
   def change
     create_table :responders do |t|
-      t.integer :emergency_code
+      t.string :emergency_code
       t.string :type
       t.string :name
       t.integer :capacity

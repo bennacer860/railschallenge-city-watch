@@ -19,12 +19,13 @@ ActiveRecord::Schema.define(version: 20150711224320) do
     t.integer  "police_severity"
     t.integer  "medical_severity"
     t.integer  "resolved_at"
+    t.integer  "emergency_code"
     t.datetime "created_at",       null: false
     t.datetime "updated_at",       null: false
   end
 
   create_table "responders", force: :cascade do |t|
-    t.integer  "emergency_code"
+    t.string   "emergency_code"
     t.string   "type"
     t.string   "name"
     t.integer  "capacity"
