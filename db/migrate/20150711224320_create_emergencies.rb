@@ -7,7 +7,7 @@ class CreateEmergencies < ActiveRecord::Migration
       t.integer :medical_severity
       t.integer :resolved_at
       t.integer :emergency_code
-      t.boolean :full_response, default: true
+      t.boolean :fully_responded, default: false
 
       t.timestamps null: false
     end

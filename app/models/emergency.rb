@@ -13,24 +13,29 @@ class Emergency < ActiveRecord::Base
     self.responders.clear 
   end
 
-  def full_message
+  def enough_resources?
+    self.responders.sum(:capacity) >= (self.fire_severity + self.police_severity + self.medical_severity)
+  end
 
+  def full_response
+    not_enough_ressorces_count = Emergency.all.select{|emergency| emergency.fully_responded}.count
+    total_emergencies = Emergency.count
+    [not_enough_ressorces_count,total_emergencies]
   end
 
   def dispatch
     RESPONDER_TYPE.each do |key,value|
       # find a responder on duty and available that can handle the emergency on his own
-      #post '/emergencies/', emergency: { code: 'E-00000001', fire_severity: 3, police_severity: 0, medical_severity: 0  }
       responder = Responder.by_type(value).on_duty.available.where("capacity = ?", self.send(key))
       # see if we ahve an exact match
       if responder.count == 1
         self.responders << responder
       else
-        #binding.pry
         # if there is no exact match add resources until it is enough for the emergency severity
         add_resource(value,self.send(key))
       end
     end
+    self.fully_responded = true if self.enough_resources?
   end
 
   def add_resource(type,severity)
@@ -40,8 +45,6 @@ class Emergency < ActiveRecord::Base
     responders_by_type.each do |responder|
       if (responder_severity_sum < severity)
         responder_severity_sum += responder.capacity
-        # puts "type : #{type} - severity : #{severity} - responder  #{responder.name} : #{responder.capacity}"
-        # puts "responder_severity_sum #{responder_severity_sum}"
         self.responders << responder
       end
     end

@@ -20,8 +20,9 @@ ActiveRecord::Schema.define(version: 20150711224320) do
     t.integer  "medical_severity"
     t.integer  "resolved_at"
     t.integer  "emergency_code"
-    t.datetime "created_at",       null: false
-    t.datetime "updated_at",       null: false
+    t.boolean  "fully_responded",  default: true
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
   end
 
   create_table "responders", force: :cascade do |t|
