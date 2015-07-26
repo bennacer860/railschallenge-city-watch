@@ -17,13 +17,33 @@ class Emergency < ActiveRecord::Base
   end
 
   def dispatch
-    RESPONDER_TYPE.each{|key,value|
-      #find a responder on duty and available that can handle the emergency on his own
+    RESPONDER_TYPE.each do |key,value|
+      # find a responder on duty and available that can handle the emergency on his own
       #post '/emergencies/', emergency: { code: 'E-00000001', fire_severity: 3, police_severity: 0, medical_severity: 0  }
-      # binding.pry
-      responder = Responder.where("type = ? and capacity = ?", value, self.send("#{key}"))
-      self.responders << responder
-    }
+      responder = Responder.where("type = ? and capacity = ?", value, self.send(key))
+      # see if we ahve an exact match
+      if responder.count == 1
+        self.responders << responder
+      else
+        #binding.pry
+        # if there is no exact match add resources until it is enough for the emergency severity
+        add_resource(value,self.send(key))
+      end
+    end
+  end
+
+  def add_resource(type,severity)
+    responders_by_type = Responder.by_type(type).on_duty.available.order(capacity: :desc)
+    responder_severity_sum = 0
+    responder_list = []
+    responders_by_type.each do |responder|
+      if (responder_severity_sum < severity)
+        responder_severity_sum += responder.capacity
+        # puts "type : #{type} - severity : #{severity} - responder  #{responder.name} : #{responder.capacity}"
+        # puts "responder_severity_sum #{responder_severity_sum}"
+        self.responders << responder
+      end
+    end
   end
 
 end
