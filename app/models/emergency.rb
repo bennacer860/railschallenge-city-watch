@@ -17,8 +17,12 @@ class Emergency < ActiveRecord::Base
   end
 
   def dispatch
-    RESPONDER_TYPE.keys.each{|key|
-      #find a responder on duty
+    RESPONDER_TYPE.each{|key,value|
+      #find a responder on duty and available that can handle the emergency on his own
+      #post '/emergencies/', emergency: { code: 'E-00000001', fire_severity: 3, police_severity: 0, medical_severity: 0  }
+      # binding.pry
+      responder = Responder.where("type = ? and capacity = ?", value, self.send("#{key}"))
+      self.responders << responder
     }
   end
 
