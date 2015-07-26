@@ -22,15 +22,22 @@ class Responder < ActiveRecord::Base
   #   are on duty
   #
 
+  def self.show_capacity_by_type(type)
+    [
+      Responder.by_type(type).sum(:capacity),
+      Responder.by_type(type).available.sum(:capacity),
+      Responder.by_type(type).on_duty.sum(:capacity),
+      Responder.by_type(type).available.on_duty.sum(:capacity)
+    ]
+  end
+
   def self.show_capacity
-    group_by_type = Responder.all.to_a.group_by{|e| e[:type]}
-    capacities = {}
-    group_by_type.keys.each{|key|  capacities[key] = [
-      group_by_type[key].map{|r| r.capacity}.inject(:+),
-      group_by_type[key].select{|r| r.emergency_code.nil?}.map{|r| r.capacity}.inject(:+),
-      group_by_type[key].select{|r| r.on_duty}.map{|r| r.capacity}.inject(:+),
-      group_by_type[key].select{|r| r.on_duty && r.emergency_code.nil?}.map{|r| r.capacity}.inject(:+) ]}
-    capacities
+    types = [ "Fire" ,"Police" ,"Medical" ]
+    capacity_result = {}
+    types.each do |type|
+      capacity_result[type] = self.show_capacity_by_type(type)
+    end
+    return capacity_result
   end
 
 end

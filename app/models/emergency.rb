@@ -7,9 +7,10 @@ class Emergency < ActiveRecord::Base
   validates :fire_severity, presence: true, numericality: { greater_than_or_equal_to: 0 }
   RESPONDER_TYPE = { :fire_severity => "Fire", :medical_severity => "Medical", :police_severity => "Police" }
   before_create :dispatch
+  before_save :resolve
 
-  def resolved?
-    !resolved_at.nil?
+  def resolve
+    self.responders.clear 
   end
 
   def full_message
@@ -20,7 +21,7 @@ class Emergency < ActiveRecord::Base
     RESPONDER_TYPE.each do |key,value|
       # find a responder on duty and available that can handle the emergency on his own
       #post '/emergencies/', emergency: { code: 'E-00000001', fire_severity: 3, police_severity: 0, medical_severity: 0  }
-      responder = Responder.where("type = ? and capacity = ?", value, self.send(key))
+      responder = Responder.by_type(value).on_duty.available.where("capacity = ?", self.send(key))
       # see if we ahve an exact match
       if responder.count == 1
         self.responders << responder
@@ -44,6 +45,12 @@ class Emergency < ActiveRecord::Base
         self.responders << responder
       end
     end
+  end
+
+  private
+
+  def resolved?
+    !resolved_at.nil?
   end
 
 end
